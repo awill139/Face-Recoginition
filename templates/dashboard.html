@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <div class="profile-container">
+        <img src="" alt="Profile picture" id="profile-pic" class="profile-pic">
+        <h1 id="user-name" class="user-name"></h1>
+        <p id="user-email" class="user-email"></p>
+        <p id="user-bio" class="user-bio"></p>
+        <form action="/logout" method="POST">
+            <input type="submit" value="Log Out" >
+        </form>
+    </div>
+
+    
+
+    <script>
+
+document.addEventListener("DOMContentLoaded", () => {
+    const user = {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        bio: "Web developer and avid traveler",
+        profilePic: "static/user_image/Utkarsh.jpg"
+    };
+
+    displayUserProfile(user);
+});
+
+function displayUserProfile(user) {
+    const profilePic = document.getElementById("profile-pic");
+    const userName = document.getElementById("user-name");
+    const userBio = document.getElementById("user-bio");
+    alert("static/user_image/"+sessionStorage.getItem("name")+".jpg")
+    profilePic.src = "static/user_image/"+sessionStorage.getItem("name")+".jpg";
+    userName.textContent = sessionStorage.getItem("name");;
+    
+    userBio.textContent = "Web developer and avid traveler";
+}
+
+    </script>
+</body>
+</html>

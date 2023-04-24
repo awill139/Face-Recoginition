@@ -1,0 +1,87 @@
+	<!DOCTYPE html>
+	<html lang="zxx" class="no-js">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Face Authentication System</title>
+			<style>
+				* {
+				  box-sizing: border-box;
+				  margin: 0;
+				  padding: 0;
+				}
+			
+				body {
+				  font-family: Arial, sans-serif;
+				  display: flex;
+				  justify-content: center;
+				  align-items: center;
+				  height: 100vh;
+				  margin: 0;
+				  background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+				  background-size: 400% 400%;
+				  animation: gradient 15s ease infinite;
+				}
+			
+				@keyframes gradient {
+				  0% {
+					background-position: 0% 50%;
+				  }
+				  50% {
+					background-position: 100% 50%;
+				  }
+				  100% {
+					background-position: 0% 50%;
+				  }
+				}
+			
+				.container {
+				  text-align: center;
+				  background-color: white;
+				  padding: 2rem;
+				  border-radius: 8px;
+				  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+				}
+			
+				h1 {
+				  margin-bottom: 2rem;
+				  color: #3c4049;
+				  font-size: 2rem;
+				}
+			
+				button {
+				  background-color: #007BFF;
+				  color: white;
+				  border: none;
+				  padding: 12px 20px;
+				  font-size: 1rem;
+				  cursor: pointer;
+				  margin: 0 0.5rem;
+				  border-radius: 4px;
+				  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+				  transition: all 0.3s ease;
+				}
+			
+				button:hover {
+				  background-color: #0056b3;
+				  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+				  transform: translateY(-2px);
+				}
+			  </style>
+		  </head>
+		<body>
+			<div class="container">
+			  <h1>Face Authentication System</h1>
+			  <form action="{{ url_for('login') }}">
+
+			  <button >Login</button>
+			  </form>
+			  <form action="{{ url_for('sign_up') }}">
+
+				<button >Sign Up</button>
+			</form>
+			</div>
+			
+		  </body>
+		
+	</html>
