@@ -9,19 +9,20 @@
 
 # import the necessary packages
 
-import keras 
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
+# import keras 
+# from pydrive.auth import GoogleAuth
+# from pydrive.drive import GoogleDrive
 import os
-from keras import *
-from keras.models import load_model
+# from keras import *
+# from keras.models import load_model
 import numpy as np
-import tensorflow as tf
+# import tensorflow as tf
+import torch
 import os
 from collections import defaultdict
 from sqlalchemy.orm import sessionmaker
 from tabledef import *
-from deepface import DeepFace
+# from deepface import DeepFace
 from torch_model import Face_Model
 
 engine = create_engine('sqlite:///login_db.db', echo=True)
@@ -92,13 +93,6 @@ def face_present(image_path):
                     (x+w+20, y+h+40), (15, 175, 61), 4)
         cv2.imwrite('static/saved_images/bounded.jpg', img)
     return face_present
-
-
-# for loading the facenet trained model 
-def load_FRmodel():
-    global model
-    model = load_model('models/model.h5', custom_objects={'triplet_loss': triplet_loss})
-    model.summary()
 
 
 # load the saved user database
@@ -322,42 +316,49 @@ def predict():
             if valid_face:
                 # find image encoding and see if the image is of a registered user or not
                # encoding = img_to_encoding('saved_image/new.jpg', model)
-               img = trans_img('saved_image/new.jpg')
-               encoding = model.get_embedding(img)
-               min_dist, identity, authenticate = face_recognition(
-                                                   encoding, user_db, model, threshold=0.9)
-                
-                # save the output for sending as json
-                identity = 'Unknown Person'
-                directory = 'static/user_image'
-                authenticate = False
-                Name = ""
-                for filename in os.listdir(directory):
-                    f = os.path.join(directory, filename)
-                    # checking if it is a file
+                img = trans_img('saved_image/new.jpg')
+                with torch.no_grad():
+                    encoding = model.get_embedding(img)
+                min_dist, identity, authenticate = face_recognition(encoding, user_db, model, threshold=0.9)
+                data['authenticate'] = authenticate
+                data['name'] = identity
+                if min_dist < 0.22:
+                    data['success'] = True
 
-                    if os.path.isfile(f):
-                        print(filename)
-                        result = DeepFace.verify(img1_path = f, img2_path = "saved_image/new.jpg")
-                        print(result['distance'])
-                        if result['distance']<0.22:
-                            Name = filename.split(".")
-                            identity = Name
-                            authenticate = True
+
+
+                # # save the output for sending as json
+                # identity = 'Unknown Person'
+                # directory = 'static/user_image'
+                # authenticate = False
+                # Name = ""
+                # for filename in os.listdir(directory):
+                #     f = os.path.join(directory, filename)
+                #     # checking if it is a file
+
+                #     if os.path.isfile(f):
+                #         print(filename)
+                #         # result = DeepFace.verify(img1_path = f, img2_path = "saved_image/new.jpg")
+
+                #         print(result['distance'])
+                #         if result['distance']<0.22:
+                #             Name = filename.split(".")
+                #             identity = Name
+                #             authenticate = True
 
                 
               #  data["min_dist"] = str(min_dist)
                 #data['email'] = identity
                # print(result.verify)
 
-                if identity != 'Unknown Person':
-                    #data['name'] = user_db[identity]['name']
-                    data['name'] = Name[0]
-                    data['authenticate'] = True
+                # if identity != 'Unknown Person':
+                #     #data['name'] = user_db[identity]['name']
+                #     data['name'] = identity
+                #     data['authenticate'] = True
                     
-                else:
-                    data['name'] = 'Unknown Person'
-                    data['authenticate'] = False
+                # else:
+                #     data['name'] = 'Unknown Person'
+                #     data['authenticate'] = False
                 data['face_present'] = True
                 
 

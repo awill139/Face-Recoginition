@@ -63,7 +63,7 @@ class Face_Model(nn.Module):
             state_dict = torch.load('models/bayesian_model.pth')
             self.state_dict = state_dict
         else:
-            state_dict = torch.load('models/model.pth')
+            state_dict = torch.load('models/model.pth', map_location=device)
             self.state_dict = state_dict
 
 def train(model, train_loader, test_loader, num_epochs=10):

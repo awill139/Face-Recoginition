@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import cv2
+import torch
 import torchvision.transforms as transforms
 
 def img_to_encoding(image_path, model):
@@ -18,8 +19,10 @@ def resize_img(image_path):
     cv2.imwrite(image_path, img)
 
 def trans_img(img):
-
+    # 
+    
     transform = transforms.Compose([
+        transforms.ToPILImage(),
         transforms.Resize(256),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
@@ -27,9 +30,13 @@ def trans_img(img):
                             std=[0.229, 0.224, 0.225])
     ])
 
-    img1 = cv2.imread(img, -1)
-    img = img1[...,::-1]
-    img = np.around(np.transpose(img, (2,0,1))/255.0, decimals=12)
-    img = np.array([img])
+    img = cv2.imread(img, -1)
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # img = img1[...,::-1]
+    # img = np.around(np.transpose(img, (2,0,1))/255.0, decimals=12)
+    
+    # img = np.array([img])
+    # import pdb; pdb.set_trace()
     img = transform(img)
+    img = torch.unsqueeze(img, 0)
     return img
