@@ -146,7 +146,11 @@ def add_face():
     # add user only if there is a face inside the picture
     if valid_face:
         # create image encoding 
-       # encoding = img_to_encoding('saved_image/new.jpg', model)
+        # encoding = img_to_encoding('saved_image/new.jpg', model)
+        img = trans_img('saved_image/new.jpg')
+        with torch.no_grad():
+            encoding = model.get_embedding(img)
+        data['encoding'] = encoding
         # save the output for sending as json
         data['face_present'] = True
     else:
@@ -245,6 +249,7 @@ def signup_user():
                 # check if any face is present or not in the picture
               #  data, encoding = add_face()
                 data = add_face()
+                encoding = data['encoding']
                 # set face detected as True
                 user_status['face_present'] = data['face_present']
             # if no image was sent
@@ -258,7 +263,7 @@ def signup_user():
                             cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
                 
                 #  create a new session
-                """
+                
                 Session = sessionmaker(bind=engine)
                 s = Session()
                 # add data to user_db dict
@@ -275,7 +280,7 @@ def signup_user():
                 user = User(POST_USERNAME, POST_PASSWORD)
                 s.add(user)
                 s.commit()
-                """
+                
 
                 # set registration status as True
                 user_status['registration'] = True
@@ -320,6 +325,7 @@ def predict():
                 with torch.no_grad():
                     encoding = model.get_embedding(img)
                 min_dist, identity, authenticate = face_recognition(encoding, user_db, model, threshold=0.9)
+                print(min_dist)
                 data['authenticate'] = authenticate
                 data['name'] = identity
                 if min_dist < 0.22:
