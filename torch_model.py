@@ -33,12 +33,12 @@ class Face_Model(nn.Module):
         super().__init__()
         self.bayesian = bayesian
         self.model = models.resnet18(pretrained=True)
-        self.model.fc = nn.Linear(512, 512)
+        self.model.fc = nn.Linear(512, 128)
 
         if bayesian:
-            self.out_layer = MultiLinear(512, 5, num_classes)
+            self.out_layer = MultiLinear(128, 5, num_classes)
         else:
-            self.out_layer = nn.Linear(512, num_classes)
+            self.out_layer = nn.Linear(128, num_classes)
 
         self.criterion = nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(self.parameters(), lr=lr)
@@ -95,5 +95,5 @@ def train(model, train_loader, test_loader, num_epochs=10):
 if __name__ == '__main__':
     train_loader = get_data('train')
     test_loader = get_data('test')
-    model = Face_Model(bayesian=False)
+    model = Face_Model(bayesian=True)
     train(model, train_loader, test_loader)
